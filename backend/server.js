@@ -9,6 +9,9 @@ const app = express();
 dotenv.config();
 connectDB();
 app.use(express.json());
+// app.use("/", (req, res) => {
+//   res.send("Api running");
+// });
 app.use("/api/users", userRoutes);
 app.use("/api/gallery", galleryRoutes);
 
