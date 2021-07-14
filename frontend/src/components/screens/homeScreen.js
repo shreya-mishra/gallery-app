@@ -1,16 +1,49 @@
 import { Button, Container } from "@material-ui/core";
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import "../../App.css";
 import AddImageForm from "../addImageForm";
-import gallery from "../data/gallery";
 import GalleryCard from "../galleryCard";
 import ModalComponent from "../modal";
+import Loading from "../loading";
+import ErrorMessage from "../errorMessage";
+import { toggleUserUpdate } from "../../redux/User/user.actions";
 
-const Home = () => {
+const Home = ({ user, toggleUserUpdate, isUserUpdate }) => {
   const [open, setOpen] = useState(false);
   const [currentObject, setCurrentObject] = useState({});
   const [openForm, setOpenForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [gallery, setGallery] = useState([]);
+  const [error, setError] = useState(false);
+  const [_update, set_Update] = useState(isUserUpdate);
+  useEffect(() => {
+    setLoading(true);
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
 
+      axios.get("/api/gallery", config).then((res) => {
+        console.log(res.data);
+
+        setGallery(res.data);
+        setLoading(false);
+      });
+
+      console.log("data is here", "data");
+    } catch (error) {
+      console.log(error);
+      setError(true);
+    }
+    if (isUserUpdate) {
+      toggleUserUpdate();
+    }
+  }, [_update]);
   const handleOpen = (item) => {
     console.log(item);
     setOpen(true);
@@ -26,6 +59,9 @@ const Home = () => {
   };
   return (
     <>
+      {console.log("gallery inside return", gallery)}
+      {loading && <Loading />}
+      {error && <ErrorMessage />}
       <Button variant='contained' color='primary' onClick={handleOpenForm}>
         Add New Image
       </Button>
@@ -58,5 +94,15 @@ const Home = () => {
     </>
   );
 };
-
-export default Home;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user.user,
+    isUserUpdate: state.user.isUserUpdate,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    toggleUserUpdate: () => dispatch(toggleUserUpdate()),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

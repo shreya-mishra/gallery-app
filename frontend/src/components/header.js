@@ -1,10 +1,12 @@
 import { Button, Container } from "@material-ui/core";
 import React, { useState } from "react";
+import { connect } from "react-redux";
+import { logout } from "../redux/User/user.actions";
 
-const Header = () => {
-  const [isNextVisible, setIsNextVisible] = useState(false);
+const Header = ({ logout, user }) => {
   return (
     <Container>
+      {console.log(user)}
       <div
         style={{
           textAlign: "center",
@@ -13,8 +15,12 @@ const Header = () => {
         <div style={{ height: 20 }} />
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div style={{ width: "100px" }} />
-          <h1>Welcome To Shreya's Gallery</h1>
-          <Button variant='text' color='secondary'>
+          {user ? (
+            <h1>Welcome To {user.name}'s Gallery</h1>
+          ) : (
+            <h1>Welcome To Your Gallery</h1>
+          )}
+          <Button variant='text' color='secondary' onClick={logout}>
             Logout
           </Button>
         </div>
@@ -23,12 +29,15 @@ const Header = () => {
     </Container>
   );
 };
-const formRender = () => {
-  return (
-    <div>
-      <h4>Form Visible</h4>
-    </div>
-  );
+const mapStateToProps = (state) => {
+  return {
+    user: state.user.user,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    logout: () => dispatch(logout()),
+  };
 };
 
-export default Header;
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

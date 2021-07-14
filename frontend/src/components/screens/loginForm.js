@@ -1,8 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import "../../App.css";
 import { NavLink } from "react-router-dom";
+import Loading from "../loading";
+import ErrorMessage from "../errorMessage";
+import { connect } from "react-redux";
+import { login, logout } from "./../../redux/User/user.actions";
 
-const LoginForm = () => {
+const LoginForm = ({ login }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      setLoading(true);
+      const { data } = await axios.post(
+        "/api/users/login",
+        {
+          email,
+          password,
+        },
+        config
+      );
+      console.log(data);
+      login(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setError(error.response.data.message);
+      setLoading(false);
+    }
+  };
   return (
     <>
       <div className='appForm'>
@@ -25,10 +61,11 @@ const LoginForm = () => {
       </div>
 
       <div className='formCenter'>
-        <form
-          className='formFields'
-          //   onSubmit={this.handleSubmit}
-        >
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        {loading && <Loading />}
+        <div style={{ height: 20 }} />
+
+        <form className='formFields' onSubmit={submitHandler}>
           <div className='formField'>
             <label className='formFieldLabel' htmlFor='email'>
               E-Mail Address
@@ -39,10 +76,10 @@ const LoginForm = () => {
               className='formFieldInput'
               placeholder='Enter your email'
               name='email'
-              // value={this.state.email}
-              // onChange={this.handleChange}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
+          <div style={{ height: 20 }} />
 
           <div className='formField'>
             <label className='formFieldLabel' htmlFor='password'>
@@ -54,21 +91,22 @@ const LoginForm = () => {
               className='formFieldInput'
               placeholder='Enter your password'
               name='password'
-              // value={this.state.password}
-              // onChange={this.handleChange}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <div style={{ height: 20 }} />
           <div className='formField'>
             <button className='formFieldButton'>Sign In</button>{" "}
-            <button to='/' className='formFieldLink'>
-              Create an account
-            </button>
           </div>
         </form>
       </div>
     </>
   );
 };
+const mapDispatchToProps = (dispatch) => {
+  return {
+    login: (user) => dispatch(login(user)),
+  };
+};
 
-export default LoginForm;
+export default connect(null, mapDispatchToProps)(LoginForm);
