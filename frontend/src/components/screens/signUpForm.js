@@ -4,8 +4,9 @@ import { NavLink } from "react-router-dom";
 import ErrorMessage from "../errorMessage";
 import Loading from "../loading";
 import axios from "axios";
+import { Redirect } from "react-router";
 
-const SignUpForm = () => {
+const SignUpForm = (props) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [profile, setProfile] = useState(
@@ -39,6 +40,7 @@ const SignUpForm = () => {
         console.log(data);
         setLoading(false);
         localStorage.setItem("userInfo", JSON.stringify(data));
+        props.history.push("/");
       } catch (error) {
         setError(error.response.data.message);
         setLoading(false);
