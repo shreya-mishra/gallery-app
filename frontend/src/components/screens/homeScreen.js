@@ -1,4 +1,4 @@
-import { Button, Container } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -17,7 +17,7 @@ const Home = ({ user, toggleUserUpdate, isUserUpdate }) => {
   const [loading, setLoading] = useState(false);
   const [gallery, setGallery] = useState([]);
   const [error, setError] = useState(false);
-  const [_update, set_Update] = useState(isUserUpdate);
+  const [_update] = useState(isUserUpdate);
   const [refreshKey, setRefreshKey] = useState("initialKey");
   useEffect(() => {
     setLoading(true);
@@ -71,24 +71,21 @@ const Home = ({ user, toggleUserUpdate, isUserUpdate }) => {
         Add New Image
       </Button>
       <ModalComponent open={openForm} handleClose={handleClose}>
-        <div
-          style={{
-            textAlign: "center",
-            fontFamily: "Otomanopee One",
-          }}>
-          Gallery Image
-        </div>
-        <AddImageForm refreshData={fetchData} closeandSubmit={handleClose} />
+        <AddImageForm
+          refreshData={fetchData}
+          openForm={openForm}
+          setOpenForm={setOpenForm}
+        />
+      </ModalComponent>
+      <ModalComponent open={open} handleClose={handleClose}>
+        <img
+          style={{ maxHeight: "100%", width: "100%" }}
+          src={currentObject.img}
+          alt='image'
+        />
       </ModalComponent>
       <div className='gallery__container'>
-        <ModalComponent open={open} handleClose={handleClose}>
-          <img
-            style={{ maxHeight: "100%", width: "100%" }}
-            src={currentObject.img}
-            alt='image'
-          />
-        </ModalComponent>
-        <React.Fragment key={refreshKey}>
+        <React.Fragment key={refreshKey} style={{ display: "none" }}>
           {gallery.map((item) => {
             return (
               <div key={item._id} className='gallery__card'>

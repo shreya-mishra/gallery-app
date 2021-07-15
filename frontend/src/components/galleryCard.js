@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -8,7 +8,6 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { connect } from "react-redux";
-import { gallery } from "../redux/Gallery/gallery.actions";
 import ModalComponent from "./modal";
 import AddImageForm from "./addImageForm";
 import axios from "axios";
@@ -71,13 +70,6 @@ const GalleryCard = ({ user, refreshData, item, ...props }) => {
   return (
     <Card className={classes.root}>
       <ModalComponent open={openForm} handleClose={handleClose}>
-        <div
-          style={{
-            textAlign: "center",
-            fontFamily: "Otomanopee One",
-          }}>
-          Gallery Image
-        </div>
         <AddImageForm
           refreshData={() => {
             refreshData();

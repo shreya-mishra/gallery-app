@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import Loading from "../loading";
 import ErrorMessage from "../errorMessage";
 import { connect } from "react-redux";
-import { login, logout } from "./../../redux/User/user.actions";
+import { login } from "./../../redux/User/user.actions";
 
 const LoginForm = ({ login }) => {
   const [email, setEmail] = useState("");

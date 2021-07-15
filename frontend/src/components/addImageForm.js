@@ -5,11 +5,9 @@ import ErrorMessage from "./errorMessage";
 import Loading from "./loading";
 import { connect } from "react-redux";
 import { toggleUserUpdate } from "../redux/User/user.actions";
-import { TextField } from "@material-ui/core";
 
 const AddImageForm = ({
   refreshData,
-
   user,
   _title,
   _id,
@@ -17,9 +15,11 @@ const AddImageForm = ({
   img,
   buttonType,
   toggleUserUpdate,
-  closeAndSubmit,
+  // closeAndSubmit,
+  openForm,
+  setOpenForm,
 }) => {
-  const [isUpdate, setIsUpdate] = useState(buttonType === "update");
+  const [isUpdate] = useState(buttonType === "update");
 
   const [title, setTitle] = useState(isUpdate ? _title : "");
   const [description, setDescription] = useState(isUpdate ? _description : "");
@@ -27,7 +27,6 @@ const AddImageForm = ({
   const [picMessage, setPicMessage] = useState(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [openForm, setOpenForm] = useState(true);
   const [updateData, setUpdateData] = useState({});
 
   const handleSubmit = async (e) => {
@@ -47,11 +46,10 @@ const AddImageForm = ({
       );
       console.log(data);
       setLoading(false);
-
+      setOpenForm(false);
       refreshData();
-      // closeAndSubmit();
     } catch (error) {
-      setError(error.response.data.message);
+      setError(error);
       setLoading(false);
     }
   };
@@ -120,13 +118,21 @@ const AddImageForm = ({
   };
   return (
     <div className='formCenter' style={{ textAlign: "center" }}>
-      {console.log(title)}
       {error && <ErrorMessage>{error}</ErrorMessage>}
 
       {loading && <Loading />}
+      <div
+        style={{
+          textAlign: "center",
+          fontFamily: "Otomanopee One",
+        }}>
+        {isUpdate ? "Update Image" : "Gallery Image"}
+      </div>
       <form className='formFields'>
+        <div style={{ height: 20 }} />
+
         <div className='formField'>
-          <label className='formFieldLabel' htmlFor='title'>
+          <label className='formFieldLabel1' htmlFor='title'>
             Title
           </label>
           <input
@@ -142,9 +148,10 @@ const AddImageForm = ({
             value={title}
           />
         </div>
+        <div style={{ height: 20 }} />
         <div className='formField'>
-          <label className='formFieldLabel' htmlFor='description'>
-            Description
+          <label className='formFieldLabel1' htmlFor='description'>
+            caption
           </label>
           <input
             type='description'
@@ -157,10 +164,11 @@ const AddImageForm = ({
           />
         </div>
         {picMessage && <ErrorMessage>{picMessage}</ErrorMessage>}
+        <div style={{ height: 20 }} />
 
         <div className='formField'>
-          <label className='formFieldLabel' htmlFor='galleryImage'>
-            Gallery Image
+          <label className='formFieldLabel1' htmlFor='galleryImage'>
+            Image
           </label>
           <input
             type='file'

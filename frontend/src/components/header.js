@@ -1,5 +1,5 @@
 import { Button, Container } from "@material-ui/core";
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { logout } from "../redux/User/user.actions";
 

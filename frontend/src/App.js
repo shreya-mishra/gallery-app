@@ -5,9 +5,8 @@ import Home from "./components/screens/homeScreen";
 import LoginForm from "./components/screens/loginForm";
 import SignUpForm from "./components/screens/signUpForm";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { Redirect, useHistory } from "react-router";
+import { Redirect } from "react-router";
 import notFound from "./components/screens/notFound";
-import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 
 function App({ isLoggedIn }) {
