@@ -13,17 +13,22 @@ const Header = ({ logout, user }) => {
           fontFamily: "Otomanopee One",
         }}>
         <div style={{ height: 20 }} />
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <div style={{ width: "100px" }} />
-          {user ? (
+        {user.token ? (
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ width: "100px" }} />
+
             <h1>Welcome To {user.name}'s Gallery</h1>
-          ) : (
-            <h1>Welcome To Your Gallery</h1>
-          )}
-          <Button variant='text' color='secondary' onClick={logout}>
-            Logout
-          </Button>
-        </div>
+
+            <Button variant='text' color='secondary' onClick={logout}>
+              Logout
+            </Button>
+          </div>
+        ) : (
+          <div>
+            <div style={{ width: "100px" }} />
+            <h1>Welcome To your Gallery</h1>
+          </div>
+        )}
       </div>
       <div style={{ height: 40 }} />
     </Container>
