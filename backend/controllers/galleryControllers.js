@@ -33,6 +33,7 @@ const getGalleryImageById = asyncHandler(async (req, res) => {
   //   res.json(galleryImage);
 });
 const updateGalleryImage = asyncHandler(async (req, res) => {
+  console.log("server got hit");
   const { title, description, img } = req.body;
   const galleryImage = await Gallery.findById(req.params.id);
   if (galleryImage.user.toString() !== req.user._id.toString()) {

@@ -5,8 +5,11 @@ import ErrorMessage from "./errorMessage";
 import Loading from "./loading";
 import { connect } from "react-redux";
 import { toggleUserUpdate } from "../redux/User/user.actions";
+import { TextField } from "@material-ui/core";
 
 const AddImageForm = ({
+  refreshData,
+
   user,
   _title,
   _id,
@@ -14,6 +17,7 @@ const AddImageForm = ({
   img,
   buttonType,
   toggleUserUpdate,
+  closeAndSubmit,
 }) => {
   const [isUpdate, setIsUpdate] = useState(buttonType === "update");
 
@@ -23,6 +27,7 @@ const AddImageForm = ({
   const [picMessage, setPicMessage] = useState(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [openForm, setOpenForm] = useState(true);
   const [updateData, setUpdateData] = useState({});
 
   const handleSubmit = async (e) => {
@@ -42,6 +47,9 @@ const AddImageForm = ({
       );
       console.log(data);
       setLoading(false);
+
+      refreshData();
+      // closeAndSubmit();
     } catch (error) {
       setError(error.response.data.message);
       setLoading(false);
@@ -92,7 +100,7 @@ const AddImageForm = ({
       axios
         .put(
           `/api/gallery/${_id}`,
-          { img, title: _title, description: _description },
+          { img: galleryImage, title: title, description: description },
           config
         )
         .then((res) => {
@@ -101,6 +109,7 @@ const AddImageForm = ({
 
           setLoading(false);
           toggleUserUpdate();
+          refreshData();
         });
 
       console.log("data is here", "data");
@@ -115,7 +124,7 @@ const AddImageForm = ({
       {error && <ErrorMessage>{error}</ErrorMessage>}
 
       {loading && <Loading />}
-      <form onSubmit={handleSubmit} className='formFields'>
+      <form className='formFields'>
         <div className='formField'>
           <label className='formFieldLabel' htmlFor='title'>
             Title
@@ -175,7 +184,9 @@ const AddImageForm = ({
               Update
             </button>
           ) : (
-            <button className='formFieldButton'>Submit</button>
+            <button className='formFieldButton' onClick={handleSubmit}>
+              Submit
+            </button>
           )}
         </div>
       </form>

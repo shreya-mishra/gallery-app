@@ -18,8 +18,15 @@ const Home = ({ user, toggleUserUpdate, isUserUpdate }) => {
   const [gallery, setGallery] = useState([]);
   const [error, setError] = useState(false);
   const [_update, set_Update] = useState(isUserUpdate);
+  const [refreshKey, setRefreshKey] = useState("initialKey");
   useEffect(() => {
     setLoading(true);
+    fetchData();
+    if (isUserUpdate) {
+      toggleUserUpdate();
+    }
+  }, [_update]);
+  const fetchData = () => {
     try {
       const config = {
         headers: {
@@ -27,12 +34,13 @@ const Home = ({ user, toggleUserUpdate, isUserUpdate }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-
+      setLoading(true);
       axios.get("/api/gallery", config).then((res) => {
         console.log(res.data);
 
         setGallery(res.data);
         setLoading(false);
+        setRefreshKey(Math.random().toString());
       });
 
       console.log("data is here", "data");
@@ -40,10 +48,7 @@ const Home = ({ user, toggleUserUpdate, isUserUpdate }) => {
       console.log(error);
       setError(true);
     }
-    if (isUserUpdate) {
-      toggleUserUpdate();
-    }
-  }, [_update]);
+  };
   const handleOpen = (item) => {
     console.log(item);
     setOpen(true);
@@ -73,7 +78,7 @@ const Home = ({ user, toggleUserUpdate, isUserUpdate }) => {
           }}>
           Gallery Image
         </div>
-        <AddImageForm />
+        <AddImageForm refreshData={fetchData} closeandSubmit={handleClose} />
       </ModalComponent>
       <div className='gallery__container'>
         <ModalComponent open={open} handleClose={handleClose}>
@@ -83,13 +88,19 @@ const Home = ({ user, toggleUserUpdate, isUserUpdate }) => {
             alt='image'
           />
         </ModalComponent>
-        {gallery.map((item) => {
-          return (
-            <div key={item._id} className='gallery__card'>
-              <GalleryCard onClick={() => handleOpen(item)} item={item} />
-            </div>
-          );
-        })}
+        <React.Fragment key={refreshKey}>
+          {gallery.map((item) => {
+            return (
+              <div key={item._id} className='gallery__card'>
+                <GalleryCard
+                  onClick={() => handleOpen(item)}
+                  item={item}
+                  refreshData={fetchData}
+                />
+              </div>
+            );
+          })}
+        </React.Fragment>
       </div>
     </>
   );
